@@ -2,6 +2,14 @@
 
 simple todo app written in pascal for learning purpose.
 
+## requirements
+
+```
+sudo apt install \
+  fp-compiler \
+  make
+```
+
 ## build
 
 just `cd` to pastasks and do a `make`.
