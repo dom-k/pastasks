@@ -1,10 +1,22 @@
 program pastasks;
 
+const
+  SAVEFILE = 'pastasks.dat';
+
+type
+  TaskRecord = record
+    id: integer;
+    title: string;
+    done: boolean;
+  end;
+
 var
   todos: array [0..100, 0..1] of string; (* 0: text, 1: status (do, done) *)
   inp: string;
-  todoText: string;
+  taskId: integer;
   todoIndex: integer;
+  Task: TaskRecord;
+  f: file of TaskRecord;
 
 procedure printTitle();
 begin
@@ -19,30 +31,34 @@ begin
 end;
 
 procedure addTodo();
+var 
+  inp: string;
 begin
   write('what to you want to do? ');
-  readln(todoText);
-  todos[todoIndex][0] := todoText;
-  todos[todoIndex][1] := 'do';
-  todoIndex := todoIndex + 1;
-  writeln('"', todoText, '" added.');
+  readln(inp);
+
+  Task.id := taskId;
+  Task.title := inp;
+  Task.done := false;
+  write(f, Task);
+
+  taskId := taskId + 1;
+  writeln('"', Task.title, '" added.');
 end;
 
 procedure listTodos();
-var
-  i: integer;
 begin
-  writeln('you currently have ', todoIndex, ' todos.');
-  if todoIndex > 0 then
-    begin
-      for i := 0 to todoIndex - 1 do
-        if todos[i][1] = 'do' then
-          begin
-            writeln('[', i, ']: ', todos[i][0]);
-          end
-        else 
-          writeln('[', i, ']: ', todos[i][0], ' (', todos[i][1], ')');
-    end
+  writeln('you currently have ', taskId, ' todos.');
+  
+  reset(f);
+  while not eof(f) do
+  begin
+    read(f, Task);
+    if Task.done then
+      writeln('[', Task.id, ']: ', Task.title, ' (done)')
+    else
+      writeln('[', Task.id, ']: ', Task.title);
+  end;
 end;
 
 procedure setTodoToDone();
@@ -52,8 +68,9 @@ begin
   listTodos();
   write('enter index of done task: ');
   readln(i);
-  todos[i][1] := 'done';
-  writeln('task set to done');
+
+  (* TODO: write done to file for task. *)
+
 end;
 
 procedure enterMainLoop();
@@ -87,10 +104,15 @@ begin
 end;
 
 begin
+  taskId := 0;
+  assign(f, SAVEFILE);
+  rewrite(f);
   todoIndex := 0;
 
   printTitle();
   printOptions();
   writeln;
   enterMainLoop();
+
+  close(f);
 end.
