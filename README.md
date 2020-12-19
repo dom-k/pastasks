@@ -1,6 +1,6 @@
 # pastasks
 
-[!pasta](pasta.png)
+![pasta](pasta.png)
 
 simple todo app written in pascal for learning purpose.
 
