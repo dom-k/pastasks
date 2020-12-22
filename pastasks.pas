@@ -77,29 +77,36 @@ procedure enterMainLoop();
 begin
   repeat 
     readln(inp);
-    if (inp = 'a') then
+    case inp of
+    'A','a':
       begin
         addTodo();
-      end
-    else if (inp = 'l') then
+      end;
+    'l', 'L':
       begin
         listTodos();
-      end
-    else if (inp = 'd') then
+      end;
+    'd', 'D':
       begin
         setTodoToDone();
-      end
-    else if (inp = 'i') then
+      end;
+    'i', 'I':
       begin
         printOptions();
-      end
+      end;
+    'q', 'Q':
+      begin
+        writeln('dying ...');
+      end;
     else if (inp = 'q') then
       begin
         writeln('dying ...');
       end
     else
+      begin
         writeln('i do not understand ...');
-        todos[todoIndex][1] := 'do';
+      end;
+    end;
   until inp = 'q';
 end;
 
