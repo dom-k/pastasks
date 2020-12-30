@@ -22,26 +22,25 @@ just `cd` to pastasks and do a `make`.
 --------
 pastasks
 --------
-(a)dd todo, (l)ist todos, task (d)one, print (i)nfo, (q)uit
+(a)dd task, (l)ist tasks, task (d)one, print (i)nfo, (q)uit
 
-a         
+l
+you currently have 0 tasks.
+a
 what to you want to do? feed the kitten!!!
 "feed the kitten!!!" added.
 a
 what to you want to do? buy new clothes
 "buy new clothes" added.
 l
-you currently have 2 todos.
+you currently have 2 tasks.
 [0]: feed the kitten!!!
 [1]: buy new clothes
 d
-you currently have 2 todos.
-[0]: feed the kitten!!!
-[1]: buy new clothes
-enter index of done task: 1
-task set to done
+nice, enter index of done task: 1
+task "buy new clothes" done!
 l
-you currently have 2 todos.
+you currently have 2 tasks.
 [0]: feed the kitten!!!
 [1]: buy new clothes (done)
 q
