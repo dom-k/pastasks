@@ -1,4 +1,7 @@
 program pastasks;
+{$MODE OBJFPC}
+
+uses sysutils;
 
 const
   SAVEFILE = 'pastasks.dat';
@@ -13,8 +16,7 @@ type
 var
   todos: array [0..100, 0..1] of string; (* 0: text, 1: status (do, done) *)
   inp: string;
-  taskId: integer;
-  todoIndex: integer;
+  taskIndex: integer;
   Task: TaskRecord;
   f: file of TaskRecord;
 
@@ -37,18 +39,18 @@ begin
   write('what to you want to do? ');
   readln(inp);
 
-  Task.id := taskId;
+  Task.id := taskIndex;
   Task.title := inp;
   Task.done := false;
   write(f, Task);
 
-  taskId := taskId + 1;
+  taskIndex := taskIndex + 1;
   writeln('"', Task.title, '" added.');
 end;
 
 procedure listTodos();
 begin
-  writeln('you currently have ', taskId, ' todos.');
+  writeln('you currently have ', taskIndex, ' todos.');
   
   reset(f);
   while not eof(f) do
@@ -64,13 +66,32 @@ end;
 procedure setTodoToDone();
 var
   i: integer;
+  taskFound: boolean;
 begin
+  taskFound := false;
+
   listTodos();
   write('enter index of done task: ');
   readln(i);
+  while not eof(f) do
+  begin
+    read(f, Task);
+    if (Task.id = i) then
+      Task.done := true;
+      taskFound := true;
+      write(f, Task);
+  end;
+end;
 
-  (* TODO: write done to file for task. *)
-
+procedure setTaskIndex();
+begin
+  taskIndex := 0;
+  while not eof(f) do
+  begin
+    read(f, Task);
+    taskIndex := taskIndex + 1;
+    writeln('new task index: ', taskIndex);
+  end;
 end;
 
 procedure enterMainLoop();
@@ -111,11 +132,16 @@ begin
 end;
 
 begin
-  taskId := 0;
   assign(f, SAVEFILE);
-  reset(f, 1);
+  try
+    reset(f, 1)
+  except
+    begin
+      rewrite(f);
+    end;
+  end;
+  setTaskIndex();
   seek(f, filesize(f)); { move pointer to the end of the file }
-  todoIndex := 0;
 
   printTitle();
   printOptions();
