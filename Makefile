@@ -6,4 +6,4 @@ $(name).o: $(name).pas
 	fpc $(name).pas
 
 clean:
-	rm -f $(name).o $(name)
+	rm -f $(name).o $(name) $(name).dat

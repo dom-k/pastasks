@@ -1,5 +1,5 @@
 program pastasks;
-{$MODE OBJFPC}
+{$mode objfpc}
 
 uses sysutils;
 
@@ -14,7 +14,6 @@ type
   end;
 
 var
-  todos: array [0..100, 0..1] of string; (* 0: text, 1: status (do, done) *)
   inp: string;
   taskIndex: integer;
   Task: TaskRecord;
@@ -27,12 +26,22 @@ begin
   writeln('--------');
 end;
 
-procedure printOptions();
+procedure setTaskIndex();
 begin
-  writeln('(a)dd todo, (l)ist todos, task (d)one, print (i)nfo, (q)uit');
+  taskIndex := 0;
+  while not eof(f) do
+  begin
+    read(f, Task);
+    taskIndex := taskIndex + 1;
+  end;
 end;
 
-procedure addTodo();
+procedure printOptions();
+begin
+  writeln('(a)dd task, (l)ist tasks, task (d)one, print (i)nfo, (q)uit');
+end;
+
+procedure addTask();
 var 
   inp: string;
 begin
@@ -48,9 +57,9 @@ begin
   writeln('"', Task.title, '" added.');
 end;
 
-procedure listTodos();
+procedure listTasks();
 begin
-  writeln('you currently have ', taskIndex, ' todos.');
+  writeln('you currently have ', taskIndex, ' tasks.');
   
   reset(f);
   while not eof(f) do
@@ -63,34 +72,44 @@ begin
   end;
 end;
 
-procedure setTodoToDone();
+procedure setTaskToDone();
 var
+  tmpTasks: array of TaskRecord;
+  tmpIndex: integer;
+  inp: integer;
   i: integer;
-  taskFound: boolean;
 begin
-  taskFound := false;
+  tmpIndex := 0;
+  setlength(tmpTasks, taskIndex);
 
-  listTodos();
-  write('enter index of done task: ');
-  readln(i);
+  write('nice, enter index of done task: ');
+  readln(inp);
+
+  reset(f);
   while not eof(f) do
   begin
     read(f, Task);
-    if (Task.id = i) then
+
+    if (Task.id = inp) then
+    begin
       Task.done := true;
-      taskFound := true;
-      write(f, Task);
-  end;
-end;
+      writeln('task "', Task.title, '" done!');
+    end;
 
-procedure setTaskIndex();
-begin
-  taskIndex := 0;
-  while not eof(f) do
+    tmpTasks[tmpIndex].id := Task.id;
+    tmpTasks[tmpIndex].title := Task.title;
+    tmpTasks[tmpIndex].done := Task.done;
+
+    tmpIndex := tmpIndex + 1;
+  end;
+
+  rewrite(f);
+  for i := 0 to taskIndex - 1 do
   begin
-    read(f, Task);
-    taskIndex := taskIndex + 1;
-    writeln('new task index: ', taskIndex);
+    Task.id := tmpTasks[i].id;
+    Task.title := tmpTasks[i].title;
+    Task.done := tmpTasks[i].done;
+    write(f, Task);
   end;
 end;
 
@@ -101,15 +120,15 @@ begin
     case inp of
     'A','a':
       begin
-        addTodo();
+        addTask();
       end;
     'l', 'L':
       begin
-        listTodos();
+        listTasks();
       end;
     'd', 'D':
       begin
-        setTodoToDone();
+        setTaskToDone();
       end;
     'i', 'I':
       begin
