@@ -113,7 +113,8 @@ end;
 begin
   taskId := 0;
   assign(f, SAVEFILE);
-  rewrite(f);
+  reset(f, 1);
+  seek(f, filesize(f)); { move pointer to the end of the file }
   todoIndex := 0;
 
   printTitle();
