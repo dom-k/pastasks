@@ -2,7 +2,7 @@
 
 ![pasta](pasta.png)
 
-simple todo app written in pascal for learning purpose.
+simple cli todo app written in pascal for learning purpose.
 
 ## requirements
 
